@@ -10,6 +10,9 @@ module top;
     initial begin 
         vif.clk = 0;
         vif.rst_n = 0;   // Assert reset
+        vif.wr_en = 0;
+        vif.rd_en = 0;
+        vif.data_in = 0;
         #20;
         vif.rst_n = 1;   // Release reset
     end

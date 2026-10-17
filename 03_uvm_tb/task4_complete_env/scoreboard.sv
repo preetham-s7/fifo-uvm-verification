@@ -140,8 +140,10 @@ class tx_scoreboard extends uvm_component;
         
         if (fail_count == 0 && pass_count > 0)
             $display("=================== TEST PASSED SUCCESSFULLY ==================");
-        else
+        else begin
              $display("============= TEST FAILED===================");
+             `uvm_error("FIFO_RESULT", "No checks completed or scoreboard mismatches occurred")
+        end
 
     endfunction
 endclass

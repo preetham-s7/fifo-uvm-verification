@@ -107,7 +107,8 @@ class tx_monitor extends uvm_monitor;
         super.run_phase(phase);
 
         forever begin
-            @(negedge vif.clk);
+            @(posedge vif.clk);
+            #1; // Sample after DUT nonblocking updates and away from driver writes.
 
             // Only create and sample when reset is inactive AND a operation occurs
             if (vif.rst_n && (vif.wr_en || vif.rd_en)) begin

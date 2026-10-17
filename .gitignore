@@ -1,24 +1,22 @@
-# Cadence Xcelium (xrun) simulator artifacts
-xrun.log
+.sim/
+# Preserve upstream Xcelium, waveform, and editor exclusions.
 xrun.history
 xrun.key
 *.shm/
 *.diag
 xcelium.d/
 *.trn
-
-# Waveform dumps (regenerate by re-running simulation)
 *.vcd
 *.wlf
 *.shm
-
-# Questa/ModelSim artifacts
-work/
-transcript
-vsim.wlf
-
-# OS / editor junk
 .DS_Store
 Thumbs.db
 *.swp
 .vscode/
+work/
+transcript
+vsim.wlf
+*.vstf
+*.ucdb
+modelsim.ini
+*.log

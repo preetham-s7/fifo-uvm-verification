@@ -1,4 +1,18 @@
-# Synchronous FIFO — RTL Design & Progressive Verification (Directed → Layered → UVM)
+# FIFO UVM Verification — Preetham S's Learning Fork
+
+Fork of [Fahad Ahmad's sync-fifo-verification](https://github.com/gitfahadahmad/sync-fifo-verification), retaining the original MIT license, authorship, and history. This is an open-source learning and validation fork, not a claim that the upstream RTL or environment was originally authored here.
+
+This fork adds a repeatable Windows Questa regression runner, initializes FIFO control signals, samples after DUT updates, drains the final transaction before ending the test, and promotes scoreboard failure to a UVM error.
+
+```powershell
+./scripts/run-questa.ps1 -QuestaHome C:/questasim64_10.7c
+```
+
+The runner checks completion, a nonempty scoreboard, zero UVM errors/fatals, and simulator errors. Logs are local under `.sim/`. See [VALIDATION.md](VALIDATION.md) for locally observed results and limitations. The upstream project's results below are attributed historical results, not new coverage measurements by this fork.
+
+---
+
+# Upstream: Synchronous FIFO — RTL Design & Progressive Verification
 
 A synchronous FIFO designed in SystemVerilog and verified three times over with increasingly rigorous methodologies — from a hand-written directed testbench, to a mailbox-based layered testbench with a scoreboard and reference model, to a complete UVM environment with constrained-random stimulus. All stages pass with zero scoreboard mismatches.
 
