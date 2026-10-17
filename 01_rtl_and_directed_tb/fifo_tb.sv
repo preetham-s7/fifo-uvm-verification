@@ -6,7 +6,8 @@ parameter data_width = 8;
  logic [data_width-1 : 0]data_in;
  logic [data_width-1:0] data_out;
  logic overflow, underflow, full, empty;
- logic [$clog2(depth)-1 : 0]count;
+ localparam int count_width = (depth < 2) ? 1 : $clog2(depth + 1);
+ logic [count_width-1 : 0] count;
 
 // instentiating the fifo
 sync_fifo  dut (.*);

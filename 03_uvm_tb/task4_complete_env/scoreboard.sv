@@ -38,6 +38,8 @@ class tx_scoreboard extends uvm_component;
     endfunction
 
     function void write(tx_item tr);
+        bit was_full;
+        bit was_empty;
         
         // reset reference state during reset
         if (!vif.rst_n) begin
@@ -55,17 +57,24 @@ class tx_scoreboard extends uvm_component;
         check_read = 0; 
         trans_pass = 1;
 
-        if ((tr.wr_en && !expected_full) && (tr.rd_en && !expected_empty)) begin
+        // Error flags describe whether the access was rejected at this edge,
+        // so calculate them from the FIFO state before applying this item.
+        was_full  = expected_full;
+        was_empty = expected_empty;
+        expected_overflow  = tr.wr_en && was_full;
+        expected_underflow = tr.rd_en && was_empty;
+
+        if ((tr.wr_en && !was_full) && (tr.rd_en && !was_empty)) begin
             // Simultaneous read/write
             ref_fifo.push_back(tr.data_in);
             expected_out = ref_fifo.pop_front();
             check_read = 1;
         end 
-        else if (tr.wr_en && !expected_full) begin
+        else if (tr.wr_en && !was_full) begin
             // Write only
             ref_fifo.push_back(tr.data_in);
         end 
-        else if (tr.rd_en && !expected_empty) begin
+        else if (tr.rd_en && !was_empty) begin
             // Read only
             expected_out = ref_fifo.pop_front();
             check_read = 1;
@@ -80,8 +89,6 @@ class tx_scoreboard extends uvm_component;
         expected_count = ref_fifo.size();
         expected_empty = (expected_count == 0);
         expected_full  = (expected_count == fifo_depth); 
-        expected_overflow  = (tr.wr_en && expected_full);
-        expected_underflow = (tr.rd_en && expected_empty);
 
         // Verify Flags
         trans_pass &= check_flag("Full", tr.full, expected_full);

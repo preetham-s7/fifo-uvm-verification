@@ -4,7 +4,8 @@ timeprecision 1ns;
 module sync_fifo #(
   parameter int DATA_WIDTH = 8,
   parameter int DEPTH      = 4,
-  parameter int ADDR_WIDTH = $clog2(DEPTH)
+  parameter int ADDR_WIDTH = (DEPTH < 2) ? 1 : $clog2(DEPTH),
+  parameter int COUNT_WIDTH = (DEPTH < 2) ? 1 : $clog2(DEPTH + 1)
 )(
   input  logic                  clk,
   input  logic                  rst_n,
@@ -16,17 +17,15 @@ module sync_fifo #(
   output logic                  empty,
   output logic                  overflow,
   output logic                  underflow,
-  output logic [ADDR_WIDTH:0]   count
+  output logic [COUNT_WIDTH-1:0] count
 );
 
-  logic [DATA_WIDTH-1:0] mem [DEPTH];
+  logic [DATA_WIDTH-1:0] mem [0:DEPTH-1];
   logic [ADDR_WIDTH-1:0] wr_ptr, rd_ptr;
 
   
-  assign full  = (count >= (DEPTH[ADDR_WIDTH:0]));
+  assign full  = (count == DEPTH);
   assign empty = (count == '0);
-  assign overflow  = wr_en & full;
-  assign underflow = rd_en & empty;
 
   wire rd_acc = rd_en & ~empty;
   wire wr_acc = wr_en & (~full | rd_acc);
@@ -37,11 +36,13 @@ module sync_fifo #(
       rd_ptr    <= '0;
       count     <= '0;
       data_out  <= '0;
+      overflow  <= 1'b0;
+      underflow <= 1'b0;
 
     end
     else begin
-      //overflow  <= wr_en & full;
-      //underflow <= rd_en & empty;
+      overflow  <= wr_en & full & ~rd_acc;
+      underflow <= rd_en & empty;
 
       if (wr_acc) begin
         mem[wr_ptr] <= data_in;

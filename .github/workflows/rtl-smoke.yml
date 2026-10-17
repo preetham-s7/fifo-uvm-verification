@@ -1,0 +1,17 @@
+name: RTL smoke test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  rtl-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Icarus Verilog
+        run: sudo apt-get update && sudo apt-get install --yes iverilog
+      - name: Compile RTL smoke test
+        run: iverilog -g2012 -s rtl_smoke_tb -o rtl-smoke.vvp 01_rtl_and_directed_tb/fifo.sv tests/rtl_smoke_tb.sv
+      - name: Run RTL smoke test
+        run: vvp rtl-smoke.vvp
