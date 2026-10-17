@@ -1,8 +1,4 @@
-# FIFO UVM Verification — Preetham S's Learning Fork
 
-Fork of [Fahad Ahmad's sync-fifo-verification](https://github.com/gitfahadahmad/sync-fifo-verification), retaining the original MIT license, authorship, and history. This is an open-source learning and validation fork, not a claim that the upstream RTL or environment was originally authored here.
-
-This fork adds a repeatable Windows Questa regression runner, initializes FIFO control signals, samples after DUT updates, drains the final transaction before ending the test, and promotes scoreboard failure to a UVM error.
 
 ```powershell
 ./scripts/run-questa.ps1 -QuestaHome C:/questasim64_10.7c
